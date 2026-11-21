@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}مدیریت کاربران{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>ساخت کاربر</h2>
+  <p class="muted">اگر رمز را خالی بگذارید، یک رمز تصادفی ساخته می‌شود.</p>
+  <form method="post" action="/admin/users">
+    <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
+    <label for="username">نام کاربری</label>
+    <input id="username" name="username" maxlength="50" required dir="ltr">
+    <label for="full_name">نام نمایشی</label>
+    <input id="full_name" name="full_name" maxlength="100" required>
+    <label for="role">نقش</label>
+    <select id="role" name="role">
+      <option value="user">کاربر</option>
+      <option value="agent">کارشناس</option>
+      <option value="admin">مدیر</option>
+    </select>
+    <label for="password">رمز اولیه (اختیاری؛ حداقل ۱۲ نویسه)</label>
+    <input id="password" name="password" type="password" minlength="12" maxlength="128" dir="ltr">
+    <button type="submit">ساخت کاربر</button>
+  </form>
+</section>
+
+{% if generated_password %}
+<section class="card notice">
+  <strong>رمز جدید را همین حالا ذخیره کنید:</strong>
+  <code dir="ltr">{{ generated_password }}</code>
+</section>
+{% endif %}
+
+<section class="card">
+  <h2>کاربران</h2>
+  <table>
+    <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th><th>فعال</th><th>عملیات</th><th>رمز</th></tr></thead>
+    <tbody>
+    {% for item in users %}
+      <tr>
+          <td class="num">{{ item.username }}<form id="update-user-{{ item.id }}" method="post" action="/admin/users/{{ item.id }}/update"><input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}"></form></td>
+          <td><input form="update-user-{{ item.id }}" name="full_name" value="{{ item.full_name }}" maxlength="100" required></td>
+          <td>
+            <select form="update-user-{{ item.id }}" name="role">
+              <option value="user" {% if item.role == "user" %}selected{% endif %}>کاربر</option>
+              <option value="agent" {% if item.role == "agent" %}selected{% endif %}>کارشناس</option>
+              <option value="admin" {% if item.role == "admin" %}selected{% endif %}>مدیر</option>
+            </select>
+          </td>
+          <td><input form="update-user-{{ item.id }}" type="checkbox" name="is_active" value="1" {% if item.is_active %}checked{% endif %}></td>
+          <td><button form="update-user-{{ item.id }}" type="submit">ذخیره</button></td>
+        <td>
+          <form method="post" action="/admin/users/{{ item.id }}/reset-password">
+    <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
+            <button type="submit" class="secondary">بازنشانی رمز</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

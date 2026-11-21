@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}دارایی {{ asset.tag }}{% endblock %}
+{% block content %}
+<p><a href="/assets">→ بازگشت به فهرست دارایی‌ها</a></p>
+<section class="card">
+  <h2>{{ asset.tag }} — {{ asset.name }}</h2>
+  <p>نوع: {{ asset.asset_type }} · سریال: {{ asset.serial or "-" }} · وضعیت: {{ asset.status }}</p>
+  <form method="post" action="/assets/{{ asset.id }}/location"><input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}"><label for="location">محل استقرار</label><input id="location" name="location" maxlength="120" value="{{ asset.location or '' }}"><button>ذخیرهٔ محل</button></form>
+  <p>تحویل به: {{ asset.assigned_to.full_name if asset.assigned_to else "بدون کاربر" }}</p>
+</section>
+<section class="card">
+  <h3>تاریخچهٔ تیکت‌های مرتبط</h3>
+  <table><thead><tr><th>شماره</th><th>عنوان</th><th>وضعیت</th><th>اولویت</th><th>ثبت</th></tr></thead><tbody>
+  {% for ticket in tickets %}<tr><td class="num"><a href="/tickets/{{ ticket.id }}">{{ ticket.id }}</a></td><td>{{ ticket.title }}</td><td>{{ status_fa.get(ticket.status, ticket.status) }}</td><td>{{ {"low":"کم","normal":"متوسط","high":"زیاد","urgent":"فوری"}.get(ticket.priority, ticket.priority) }}</td><td class="num">{{ ticket.created_at | shamsi }}</td></tr>
+  {% else %}<tr><td colspan="5">هنوز تیکتی به این دارایی متصل نشده است.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

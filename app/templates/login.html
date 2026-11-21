@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}ورود{% endblock %}
+
+{% block content %}
+<section class="card" style="max-width:420px; margin:48px auto">
+  <h2>ورود به سامانه</h2>
+  {% if error == "invalid" %}
+  <p style="color:#b91c1c">نام کاربری یا رمز عبور اشتباه است.</p>
+  {% elif error == "locked" %}
+  <p style="color:#b91c1c">تلاش‌های ناموفق زیاد بود. چند دقیقه بعد دوباره امتحان کنید.</p>
+  {% endif %}
+  <form method="post" action="/login">
+    <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
+    <label for="username">نام کاربری</label>
+    <input id="username" name="username" dir="ltr" required autofocus autocomplete="username">
+
+    <label for="password">رمز عبور</label>
+    <input id="password" name="password" type="password" dir="ltr" required autocomplete="current-password">
+
+    <button type="submit">ورود</button>
+  </form>
+</section>
+{% endblock %}

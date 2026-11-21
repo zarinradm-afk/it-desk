@@ -1,0 +1,24 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      CSRF_SECRET_HEX: ${CSRF_SECRET_HEX:?set CSRF_SECRET_HEX in .env}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:?set ALLOWED_HOSTS in .env}
+      COOKIE_SECURE: "1"
+    volumes:
+      - ./data:/code/data
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./deploy/certs:/etc/nginx/certs:ro

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+<title id="title">Z Desk</title><desc id="desc">????? Z Desk ?? ??? Z ? ????? ????</desc>
+<defs><linearGradient id="g" x1="12" y1="12" x2="84" y2="84" gradientUnits="userSpaceOnUse"><stop stop-color="#b8ff5c"/><stop offset=".52" stop-color="#64e6ff"/><stop offset="1" stop-color="#a56bff"/></linearGradient></defs>
+<rect width="96" height="96" rx="27" fill="#111"/>
+<path d="M22 25h52v10L38 61h36v10H22V61l36-26H22V25Z" fill="url(#g)"/>
+<path d="M67 19v9M72 23h-9" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+<circle cx="76" cy="76" r="5" fill="#fff"/>
+</svg>

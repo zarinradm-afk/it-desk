@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% set priority_fa = {"low": "کم", "normal": "متوسط", "high": "زیاد", "urgent": "فوری"} %}
+
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">مرکز عملیات</div><h1>تیکت‌ها</h1><p class="muted">ثبت،پیری و رسیدگی به درخواست پشتیبانی</p></div><a class="button" href="#ticket-list">مشاهده فهرست تیکت‌ها</a></div>
+<section class="card">
+  <h2>ثبت تیکت جدید</h2>
+  <form method="post" action="/tickets">
+    <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
+    <label for="title">عنوان</label>
+    <input id="title" name="title" required maxlength="200">
+
+    <label for="description">شرح مشکل</label>
+    <textarea id="description" name="description" rows="4"></textarea>
+
+    <label for="category">دسته</label>
+    <select id="category" name="category">{% for key, label in categories.items() %}<option value="{{ key }}" {% if key == 'other' %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+    {% if user.role in ("agent", "admin") %}
+    <label for="caller_id">ثبت تماس تلفنی به نام</label>
+    <select id="caller_id" name="caller_id"><option value="">تماسی نیست؛ ثبت برای خودم</option>{% for person in callers %}<option value="{{ person.id }}">{{ person.full_name }} ({{ person.username }})</option>{% endfor %}</select>
+    {% endif %}
+    <label for="priority">اولویت</label>
+    <select id="priority" name="priority">
+      <option value="low">کم</option>
+      <option value="normal" selected>متوسط</option>
+      <option value="high">زیاد</option>
+      <option value="urgent">فوری</option>
+    </select>
+
+    {% if user.role in ("agent", "admin") %}
+    <label for="asset_id">دارایی مرتبط</label>
+    <select id="asset_id" name="asset_id"><option value="">بدون دارایی</option>{% for asset in assets %}<option value="{{ asset.id }}">{{ asset.tag }} — {{ asset.name }}</option>{% endfor %}</select>
+    {% endif %}
+
+    <button type="submit">ثبت تیکت</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>فهرست تیکت‌ها</h2>
+  <form method="get" action="/tickets" style="display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:10px; align-items:end">
+    <div><label for="q">جست‌وجو در عنوان</label><input id="q" name="q" value="{{ q }}" placeholder="مثلاً چاپگر"></div>
+    <div><label for="filter-status">وضعیت</label><select id="filter-status" name="status"><option value="">همه</option>{% for key, label in status_fa.items() %}<option value="{{ key }}" {% if status == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div><label for="filter-priority">اولویت</label><select id="filter-priority" name="priority"><option value="">همه</option>{% for key, label in priority_fa.items() %}<option value="{{ key }}" {% if priority == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <label style="margin:0"><input type="checkbox" name="overdue" value="1" {% if overdue == "1" %}checked{% endif %}> عقب‌افتاده</label>
+    <button type="submit">اعمال فیلتر</button>
+  </form>
+  {% if tickets %}
+  <table>
+    <thead>
+      <tr><th>شماره</th><th>عنوان</th><th>اولویت</th><th>وضعیت</th><th>مهلت</th><th>تاریخ ثبت</th></tr>
+    </thead>
+    <tbody>
+      {% for t in tickets %}
+      <tr>
+        <td class="num">{{ t.id }}</td>
+        <td><a href="/tickets/{{ t.id }}">{{ t.title }}</a></td>
+        <td>{{ priority_fa[t.priority] }}</td>
+        <td><span class="badge">{{ status_fa[t.status] }}</span></td>
+        <td class="num">{% if t.due_at %}{{ t.due_at | shamsi }}{% endif %}{% if t | overdue %}<span class="badge" style="background:#fee2e2;color:#991b1b">عقب‌افتاده</span>{% endif %}</td>
+        <td class="num">{{ t.created_at | shamsi }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>تیکتی با این فیلترها پیدا نشد.</p>
+  {% endif %}
+</section>
+{% endblock %}

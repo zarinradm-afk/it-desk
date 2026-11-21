@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% set priority_fa = {"low": "کم", "normal": "متوسط", "high": "زیاد", "urgent": "فوری"} %}
+{% set action_fa = {"create": "ایجاد", "update": "ویرایش", "note": "یادداشت"} %}
+
+{% block title %}تیکت {{ ticket.id }}{% endblock %}
+
+{% block content %}
+<p><a href="/tickets">→ بازگشت به فهرست</a></p>
+
+<section class="card">
+  <h2>#{{ ticket.id }} {{ ticket.title }}</h2>
+  {% include "ticket_summary.html" %}
+  <p>تاریخ ثبت: <span class="num">{{ ticket.created_at | shamsi }}</span>{% if ticket.due_at %} · مهلت: <span class="num">{{ ticket.due_at | shamsi }}</span>{% endif %}{% if ticket | overdue %} · <span class="badge" style="background:#fee2e2;color:#991b1b">عقب‌افتاده</span>{% endif %}</p>
+  <p style="white-space: pre-wrap">{{ ticket.description or "بدون شرح" }}</p>
+</section>
+
+{% if user.role in ("agent", "admin") %}
+<section class="card">
+  <h3>وضعیت و ارجاع</h3>
+  <form method="post" action="/tickets/{{ ticket.id }}/update" hx-post="/tickets/{{ ticket.id }}/update" hx-target="#ticket-summary" hx-swap="outerHTML">
+    <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
+    <label for="status">وضعیت</label>
+    <select id="status" name="status">
+      {% for key, label in status_fa.items() %}
+      <option value="{{ key }}" {% if ticket.status == key %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="assignee_id">کارشناس مسئول</label>
+    <select id="assignee_id" name="assignee_id">
+      <option value="">— تخصیص داده نشده —</option>
+      {% for a in agents %}
+      <option value="{{ a.id }}" {% if ticket.assignee_id == a.id %}selected{% endif %}>{{ a.full_name }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="asset_id">دارایی مرتبط</label>
+    <select id="asset_id" name="asset_id"><option value="">— بدون دارایی —</option>{% for asset in assets %}<option value="{{ asset.id }}" {% if ticket.asset_id == asset.id %}selected{% endif %}>{{ asset.tag }} — {{ asset.name }}</option>{% endfor %}</select>
+
+    <button type="submit">ذخیره</button>
+  </form>
+</section>
+{% endif %}
+
+<section class="card">
+  <h3>یادداشت‌ها</h3>
+  {% for n in notes %}
+  <div style="border-bottom:1px solid var(--line); padding:10px 0">
+    <small style="color:var(--mute)">
+      {{ n.author.full_name }} · <span class="num">{{ n.created_at | shamsi }}</span>
+    </small>
+    <div style="white-space: pre-wrap">{{ n.body }}</div>
+  </div>
+  {% else %}
+  <p>هنوز یادداشتی ثبت نشده است.</p>
+  {% endfor %}
+
+  <form method="post" action="/tickets/{{ ticket.id }}/notes">
+    <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
+    <label for="body">یادداشت جدید</label>
+    <textarea id="body" name="body" rows="3" required></textarea>
+    <button type="submit">افزودن یادداشت</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>تاریخچهٔ تغییرات</h3>
+  <table>
+    <thead><tr><th>زمان</th><th>کاربر</th><th>عملیات</th><th>جزئیات</th></tr></thead>
+    <tbody>
+      {% for h in history %}
+      {% set d = h.detail | fromjson %}
+      <tr>
+        <td class="num">{{ h.created_at | shamsi }}</td>
+        <td>{{ users[h.actor_id].full_name if h.actor_id else "-" }}</td>
+        <td>{{ action_fa[h.action] }}</td>
+        <td>
+          {% if d %}
+            {% if d.status %}وضعیت: {{ status_fa[d.status[0]] }} ← {{ status_fa[d.status[1]] }}{% endif %}
+            {% if d.status and d.assignee %}<br>{% endif %}
+            {% if d.assignee %}مسئول: {{ d.assignee[0] if d.assignee[0] != "-" else "بدون مسئول" }} ← {{ d.assignee[1] if d.assignee[1] != "-" else "بدون مسئول" }}{% endif %}
+            {% if d.asset %}<br>شناسه دارایی: {{ d.asset[0] if d.asset[0] else "بدون دارایی" }} ← {{ d.asset[1] if d.asset[1] else "بدون دارایی" }}{% endif %}
+          {% else %}{{ h.detail }}{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

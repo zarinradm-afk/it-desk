@@ -1,0 +1,11 @@
+<div id="ticket-summary">
+  <p>
+    درخواست‌کننده: {{ users[ticket.requester_id].full_name }}
+    · دسته: {{ categories[ticket.category] }}
+    · نوع ثبت: {{ "تماس تلفنی" if ticket.intake == "phone" else "فرم" }}
+    · اولویت: {{ {"low": "کم", "normal": "متوسط", "high": "زیاد", "urgent": "فوری"}[ticket.priority] }}
+    · وضعیت: <span class="badge">{{ status_fa[ticket.status] }}</span>
+    · مسئول: {{ users[ticket.assignee_id].full_name if ticket.assignee_id else "بدون مسئول" }}
+    · دارایی: {{ ticket.asset.tag ~ " — " ~ ticket.asset.name if ticket.asset else "بدون دارایی" }}
+  </p>
+</div>

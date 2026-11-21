@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}مدیریت دارایی‌ها{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">کنترل دارایی</div><h1>دارایی‌ها</h1><p class="muted">ثبت،یل جستجو،پیری و نگهداری سوابق تجهیزات</p></div><a class="button" href="#asset-list">مشاهده فهرست دارایی‌ها</a></div>
+<section class="card">
+  {% if imported %}<p class="notice">{{ imported }} دارایی با موفقیت وارد شد.</p>{% endif %}
+  <h2>ثبت دارایی</h2>
+  <form method="post" action="/assets">
+    <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
+    <label for="tag">شماره اموال</label><input id="tag" name="tag" maxlength="50" required dir="ltr">
+    <label for="name">نام دارایی</label><input id="name" name="name" maxlength="100" required>
+    <label for="asset_type">نوع</label><input id="asset_type" name="asset_type" maxlength="50" required>
+    <label for="location">محل استقرار</label><input id="location" name="location" maxlength="120">
+    <label for="serial">شماره سریال</label><input id="serial" name="serial" maxlength="100" dir="ltr">
+    <label for="status">وضعیت</label>
+    <select id="status" name="status"><option value="in_use">در حال استفاده</option><option value="storage">انبار</option><option value="repair">تعمیر</option><option value="retired">خارج از سرویس</option></select>
+    <label for="assigned_to_id">تحویل به</label>
+    <select id="assigned_to_id" name="assigned_to_id"><option value="">بدون کاربر</option>{% for item in users %}<option value="{{ item.id }}">{{ item.full_name }}</option>{% endfor %}</select>
+    <button type="submit">ثبت دارایی</button>
+  </form>
+</section>
+<section class="card">
+  <h2>ورود گروهی از Excel</h2>
+  <p class="muted">ستون‌های لازم: شماره اموال، نام، نوع، سریال، وضعیت، نام کاربری تحویل‌گیرنده. ستون هفتم «محل» اختیاری است.</p>
+  <form method="post" action="/assets/import" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
+    <label for="asset-file">فایل Excel</label><input id="asset-file" type="file" name="file" accept=".xlsx" required>
+    <button type="submit">وارد کردن دارایی‌ها</button>
+  </form>
+</section>
+<section class="card"><h2>فهرست دارایی‌ها</h2><form method="get" action="/assets"><label for="q">جست‌وجو با نام، شماره اموال یا محل</label><input id="q" name="q" value="{{ q }}"><button>جست‌وجو</button> <a href="/assets">نمایش همه</a></form><table><thead><tr><th>شماره</th><th>نام</th><th>نوع</th><th>سریال</th><th>وضعیت</th><th>تحویل به</th><th>محل</th></tr></thead><tbody>{% for item in assets %}<tr><td class="num"><a href="/assets/{{ item.id }}">{{ item.tag }}</a></td><td>{{ item.name }}</td><td>{{ item.asset_type }}</td><td class="num">{{ item.serial or "-" }}</td><td>{{ item.status }}</td><td>{{ item.assigned_to.full_name if item.assigned_to else "-" }}</td><td>{{ item.location or "ثبت نشده" }}</td></tr>{% else %}<tr><td colspan="7">دارایی‌ای پیدا نشد.</td></tr>{% endfor %}</tbody></table></section>
+{% endblock %}

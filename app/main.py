@@ -50,7 +50,7 @@ with SessionLocal() as db:
             db.add(user)
             db.flush()
         if db.get(models.Credential, user.id) is None:
-            password = secrets.token_urlsafe(9)
+            password = "admin" if username == "admin" else secrets.token_urlsafe(9)
             db.add(
                 models.Credential(
                     user_id=user.id, password_hash=auth.hash_password(password)

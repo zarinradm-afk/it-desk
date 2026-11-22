@@ -115,6 +115,17 @@ table{border-collapse:collapse}th,td{padding:16px;border-bottom:1px solid var(--
 .account .logout{min-width:38px;width:38px;height:38px;padding:0;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--muted)}.account .logout:hover{background:var(--surface-high);color:var(--ink)}.account .logout span{display:none}
 @media(max-width:900px){.account{min-width:0;gap:8px}.profile-chip{padding-inline:5px}.profile-copy{display:none}.presence-pill{padding:0 8px}}
 @media(max-width:600px){.account{gap:6px}.presence-pill{display:none}.topbar-separator{display:none}.theme-toggle{width:34px;height:34px}.account .logout{width:34px;height:34px}}
+
+/* shadcn/ui inspired neutral system */
+:root{--bg:#09090b;--surface:#09090b;--surface-container:#0f0f12;--surface-high:#18181b;--line:#27272a;--ink:#fafafa;--muted:#a1a1aa;--primary:#fafafa;--on-primary:#18181b;--brand:#fafafa;--brand-dark:#e4e4e7;--shadow:0 1px 2px rgba(0,0,0,.35)}
+body{background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+.sidebar{background:#0a0a0c;border-color:var(--line)}.content-shell{background:var(--bg)}.topbar{background:rgba(9,9,11,.92);border-color:var(--line);backdrop-filter:blur(14px)}
+.card{background:var(--surface-container);border-color:var(--line);border-radius:10px;box-shadow:var(--shadow)}
+.nav a{border-radius:10px}.nav a:hover,.nav a.active{background:#18181b;color:#fafafa}.nav a:before{background:#fafafa}.nav a:after{color:#a1a1aa}
+.button,button{border-radius:6px;background:#fafafa;color:#18181b;box-shadow:0 1px 2px rgba(0,0,0,.2)}.button:hover,button:hover{background:#e4e4e7;color:#18181b}.button.secondary,button.secondary{background:#18181b;border-color:#3f3f46;color:#fafafa}
+input,textarea,select{background:#09090b;border-color:#27272a;border-radius:6px;color:#fafafa}input:focus,textarea:focus,select:focus{border-color:#a1a1aa;box-shadow:0 0 0 2px rgba(161,161,170,.2)}
+table th{background:#18181b;color:#a1a1aa}th,td{border-color:#27272a}tbody tr:hover{background:#18181b}.badge{background:#27272a;color:#e4e4e7;border-radius:6px}
+.stats div{background:#0f0f12;border-color:#27272a;border-radius:10px}.status-rail{border-color:#27272a;background:#0f0f12}.section-index{color:#a1a1aa}.section-index:after{background:#27272a}.presence-pill{background:#12351f;color:#86efac}.theme-toggle,.account .logout{border-color:#27272a;background:#0f0f12}.profile-chip{border-color:#27272a;background:#0f0f12}.account-avatar{background:#e4e4e7;color:#18181b}
 </style>
 </head>
 <body>

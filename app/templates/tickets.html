@@ -2,9 +2,9 @@
 {% set priority_fa = {"low": "کم", "normal": "متوسط", "high": "زیاد", "urgent": "فوری"} %}
 
 {% block content %}
-<div class="page-heading"><div><div class="eyebrow">مرکز عملیات</div><h1>تیکت‌ها</h1><p class="muted">ثبت،پیری و رسیدگی به درخواست پشتیبانی</p></div><a class="button" href="#ticket-list">مشاهده فهرست تیکت‌ها</a></div>
-<section class="card">
-  <h2>ثبت تیکت جدید</h2>
+<div class="status-rail"><span class="pulse"></span><span>SYSTEM ONLINE</span><span class="rail-fill"></span><span>LIVE OPERATIONS</span></div><div class="page-heading"><div><div class="eyebrow">مرکز عملیات</div><h1>تیکت‌ها</h1><p class="muted">ثبت، پیگیری و رسیدگی به درخواست پشتیبانی</p></div><a class="button" href="#ticket-list">مشاهده فهرست تیکت‌ها</a></div>
+<section class="card" id="new-ticket">
+  <div class="section-index">SYSTEM PULSE</div><h2>ثبت تیکت جدید</h2>
   <form method="post" action="/tickets">
     <input type="hidden" name="csrf_token" value="{{ request.state.csrf_token }}">
     <label for="title">عنوان</label>

@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block title %}مدیریت دارایی‌ها{% endblock %}
 {% block content %}
-<div class="page-heading"><div><div class="eyebrow">کنترل دارایی</div><h1>دارایی‌ها</h1><p class="muted">ثبت،یل جستجو،پیری و نگهداری سوابق تجهیزات</p></div><a class="button" href="#asset-list">مشاهده فهرست دارایی‌ها</a></div>
-<section class="card">
+<div class="status-rail"><span class="pulse"></span><span>SYSTEM ONLINE</span><span class="rail-fill"></span><span>LIVE OPERATIONS</span></div><div class="page-heading"><div><div class="eyebrow">کنترل دارایی</div><h1>دارایی‌ها</h1><p class="muted">ثبت، جست‌وجو و نگهداری سوابق تجهیزات سازمان</p></div><a class="button" href="#asset-list">مشاهده فهرست دارایی‌ها</a></div>
+<section class="card" id="new-asset">
+  <div class="section-index">SYSTEM PULSE</div>
   {% if imported %}<p class="notice">{{ imported }} دارایی با موفقیت وارد شد.</p>{% endif %}
   <h2>ثبت دارایی</h2>
   <form method="post" action="/assets">

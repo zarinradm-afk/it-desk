@@ -3,7 +3,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).parent
 OUT = ROOT.parent / "it-desk-review.zip"
-SKIP_PARTS = {"__pycache__", ".pytest_cache", ".venv", "data", "runtime-check"}
+SKIP_PARTS = {"__pycache__", ".pytest_cache", ".venv", ".git", "data", "runtime-check"}
 SKIP_NAMES = {"windows-ca.pem"}
 
 files = [

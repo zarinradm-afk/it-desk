@@ -1,17 +1,3 @@
-# اجرای محلی با Overmind و Docker
+# Local execution with Overmind and Docker
 
-پیش‌نیازها: Docker Desktop، Overmind و Git.
-
-اجرای معماری هدف:
-
-```bash
-overmind start
-```
-
-تا زمان پایان مهاجرت، سرویس فعلی با Docker Compose اجرا می‌شود:
-
-```bash
-docker compose up --build
-```
-
-تنظیمات محیطی باید از فایل `.env` خوانده شوند و در Git Commit نشوند.
+The target local command is overmind start. Until migration is complete, run the current service with docker compose up --build. Keep secret values in .env; commit only .env.example.

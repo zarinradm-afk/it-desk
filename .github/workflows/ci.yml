@@ -1,7 +1,14 @@
-name: CI
+﻿name: CI
 on:
   push:
+    branches: [main, develop, staging]
+    paths: ['app/**', 'tests/**', 'requirements.txt', 'Dockerfile', '.github/workflows/ci.yml']
   pull_request:
+    branches: [main, develop, staging]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -10,7 +17,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
       - run: pip install -r requirements.txt
       - run: python -m compileall -q app tests
       - run: pytest -q
       - run: docker build -t it-desk-ci .
+
